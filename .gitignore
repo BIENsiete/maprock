@@ -1,0 +1,44 @@
+# Build directories
+build/
+build-*/
+cmake-build-*/
+out/
+*.user
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+CTestTestfile.cmake
+Makefile
+compile_commands.json
+
+# Compiled objects / binaries
+*.o
+*.obj
+*.exe
+*.dll
+*.a
+*.lib
+*.so
+*.dylib
+*.pdb
+
+# IDE
+.vs/
+.vscode/
+.idea/
+*.suo
+*.sln
+*.vcxproj
+
+# Exported assets
+*.obj
+*.mtl
+*.gltf
+*.glb
+exports/
+
+# OS
+.DS_Store
+Thumbs.db
