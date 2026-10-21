@@ -71,6 +71,16 @@ std::string stripExtension(std::string s) {
 }  // namespace
 
 int main(int argc, char** argv) {
+  // Double-clicking the console exe (no arguments) opens the GUI directly.
+  if (argc == 1) {
+#ifdef MAPROCK_GUI
+    return maprock::runGui("", "");
+#else
+    printUsage();
+    return 0;
+#endif
+  }
+
   maprock::ExportOptions opts;
   opts.outputBase = "world";
   bool gui = false;

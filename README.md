@@ -81,6 +81,11 @@ maprock --world "path/to/world" --resource-pack "path/to/bedrock-samples/resourc
 maprock --world "path/to/world" --resource-pack "path/to/bedrock-samples/resource_pack" --gui
 ```
 
+On Windows the build also produces `maprock-gui.exe`, a GUI-only executable with no
+console window: **double-click it** to open the map window directly and pick your
+world folder (double-clicking `maprock.exe` with no arguments does the same).
+```
+
 `--world` can point at the world directory (the one containing `level.dat`) or at the
 `db/` folder itself. `.mcworld` archives must be unzipped first.
 

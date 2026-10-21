@@ -34,7 +34,7 @@ FetchContent_MakeAvailable(leveldb)
 # leveldb-mcpe compiles its SSE4.2 CRC path unconditionally but only passes
 # -msse4.2 for the GNU compiler id. AppleClang/Clang needs the same flag (on
 # x86_64) so <nmmintrin.h>/<cpuid.h> are pulled in.
-if(CMAKE_CXX_COMPILER_ID MATCHES "Clang" AND NOT CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64|arm64")
+if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   target_compile_options(leveldb-mcpe PRIVATE -msse4.2)
 endif()
 
@@ -131,12 +131,27 @@ if(MAPROCK_BUILD_GUI)
   target_link_libraries(maprock PRIVATE imgui)
   target_compile_definitions(maprock PRIVATE MAPROCK_GUI=1)
   if(WIN32)
-    target_link_libraries(maprock PRIVATE opengl32)
+    target_link_libraries(maprock PRIVATE opengl32 ole32 uuid)
   elseif(APPLE)
     target_link_libraries(maprock PRIVATE "-framework OpenGL")
   else()
     find_package(OpenGL REQUIRED)
     target_link_libraries(maprock PRIVATE OpenGL::GL)
+  endif()
+
+  # GUI-only executable: no console window on Windows, so double-clicking it
+  # opens the map window directly.
+  add_executable(maprock-gui src/gui/gui_main.cpp src/gui/gui.cpp)
+  target_link_libraries(maprock-gui PRIVATE maprock_core imgui)
+  target_compile_definitions(maprock-gui PRIVATE MAPROCK_GUI=1)
+  if(WIN32)
+    target_link_libraries(maprock-gui PRIVATE opengl32 ole32 uuid)
+    set_target_properties(maprock-gui PROPERTIES WIN32_EXECUTABLE TRUE)
+  elseif(APPLE)
+    target_link_libraries(maprock-gui PRIVATE "-framework OpenGL")
+  else()
+    find_package(OpenGL REQUIRED)
+    target_link_libraries(maprock-gui PRIVATE OpenGL::GL)
   endif()
 endif()
 
