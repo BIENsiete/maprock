@@ -31,6 +31,13 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(leveldb)
 
+# leveldb-mcpe compiles its SSE4.2 CRC path unconditionally but only passes
+# -msse4.2 for the GNU compiler id. AppleClang/Clang needs the same flag (on
+# x86_64) so <nmmintrin.h>/<cpuid.h> are pulled in.
+if(CMAKE_CXX_COMPILER_ID MATCHES "Clang" AND NOT CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64|arm64")
+  target_compile_options(leveldb-mcpe PRIVATE -msse4.2)
+endif()
+
 # JSON for Modern C++
 FetchContent_Declare(
   nlohmann_json
@@ -58,6 +65,9 @@ if(MAPROCK_BUILD_GUI)
   set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
   set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
   set(GLFW_INSTALL OFF CACHE BOOL "" FORCE)
+  # Prefer X11 on Linux (wayland-scanner is not present on bare runners).
+  set(GLFW_BUILD_WAYLAND OFF CACHE BOOL "" FORCE)
+  set(GLFW_BUILD_X11 ON CACHE BOOL "" FORCE)
   FetchContent_Declare(
     glfw
     GIT_REPOSITORY https://github.com/glfw/glfw.git
