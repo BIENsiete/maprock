@@ -86,8 +86,9 @@ console window: **double-click it** to open the map window directly and pick you
 world folder (double-clicking `maprock.exe` with no arguments does the same).
 ```
 
-`--world` can point at the world directory (the one containing `level.dat`) or at the
-`db/` folder itself. `.mcworld` archives must be unzipped first.
+`--world` can point at a `.mcworld` archive, the world directory (the one containing
+`level.dat`) or the `db/` folder itself. `.mcworld` archives are unpacked
+automatically.
 
 You can download the official assets from
 [bedrock-samples releases](https://github.com/Mojang/bedrock-samples/releases); pass

@@ -1,7 +1,10 @@
 #include "export_pipeline.hpp"
 
+#include <filesystem>
+
 #include "gltf_exporter.hpp"
 #include "obj_exporter.hpp"
+#include "zip.hpp"
 
 namespace maprock {
 
@@ -29,17 +32,31 @@ std::string prepare(Prepared& out, const std::string& worldPath,
   out = Prepared{};
 
   report(progress, 0.05f, "Loading world...");
+
+  // Accept a .mcworld archive directly by unpacking it to a temporary folder.
+  std::string actualWorld = worldPath;
+  std::string extractDir;
+  const std::string ext = worldPath.size() >= 8 ? worldPath.substr(worldPath.size() - 8) : "";
+  if (ext == ".mcworld") {
+    report(progress, 0.05f, "Extracting .mcworld...");
+    extractDir = extractMcworld(worldPath);
+    if (extractDir.empty()) return "Failed to extract .mcworld archive.";
+    actualWorld = extractDir;
+  }
+
   LoadOptions lo;
   lo.regionDefined = !whole;
   lo.minX = minX; lo.minY = minY; lo.minZ = minZ;
   lo.maxX = maxX; lo.maxY = maxY; lo.maxZ = maxZ;
   try {
-    loadWorld(worldPath, lo, out.world);
+    loadWorld(actualWorld, lo, out.world);
   } catch (const std::exception& e) {
+    if (!extractDir.empty()) std::filesystem::remove_all(extractDir);
     return std::string("Failed to load world: ") + e.what();
   }
+  if (!extractDir.empty()) std::filesystem::remove_all(extractDir);
   if (!out.world.hasBlocks) {
-    return "World contains no blocks (is the path a Bedrock world/db directory?)";
+    return "World contains no blocks (is the path a Bedrock world, db/ folder or .mcworld?)";
   }
 
   report(progress, 0.4f, "Loading resource pack...");

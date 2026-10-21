@@ -107,6 +107,7 @@ add_library(maprock_core STATIC
   src/obj_exporter.cpp
   src/gltf_exporter.cpp
   src/export_pipeline.cpp
+  src/zip.cpp
 )
 target_include_directories(maprock_core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
 target_link_libraries(maprock_core PUBLIC
